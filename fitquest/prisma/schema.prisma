@@ -1,15 +1,119 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String     @id @default(cuid())
+  name              String
+  email             String     @unique
+  emailVerified     DateTime?
+  passwordHash      String
+  image             String?
+  personalityType   String?    @map("personality_type")
+  personalityEnergy Int        @default(100) @map("personality_energy")
+  streakDays        Int        @default(0) @map("streak_days")
+  longestStreak     Int        @default(0) @map("longest_streak")
+  lastWorkoutAt     DateTime?  @map("last_workout_at")
+  createdAt         DateTime   @default(now()) @map("created_at")
+  updatedAt         DateTime   @updatedAt @map("updated_at")
+
+  workouts      Workout[]
+  badges        Badge[]
+  sentRequests  Friendship[] @relation("UserFriends")
+  receivedRequests Friendship[] @relation("UserFriendOf")
+  feedItems     FeedItem[]
+  contracts     Contract[]
+  interactions  Interaction[]
+
+  @@map("users")
+}
+
+model Workout {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  type       String
+  duration   Int
+  distance   Float?
+  source     String   @default("manual")
+  recordedAt DateTime @default(now()) @map("recorded_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("workouts")
+}
+
+model Badge {
+  id         String    @id @default(cuid())
+  userId     String    @map("user_id")
+  series     String
+  tier       String
+  unlockedAt DateTime? @map("unlocked_at")
+  progress   Float     @default(0)
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, series, tier])
+  @@map("badges")
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  friendId  String   @map("friend_id")
+  status    String   @default("pending")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User @relation("UserFriends", fields: [userId], references: [id], onDelete: Cascade)
+  friend  User @relation("UserFriendOf", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
+  @@map("friendships")
+}
+
+model FeedItem {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  type      String
+  content   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interactions Interaction[]
+
+  @@map("feed_items")
+}
+
+model Interaction {
+  id        String   @id @default(cuid())
+  feedItemId String  @map("feed_item_id")
+  userId    String   @map("user_id")
+  type      String
+  content   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  feedItem FeedItem @relation(fields: [feedItemId], references: [id], onDelete: Cascade)
+
+  @@unique([feedItemId, userId, type])
+  @@map("interactions")
+}
+
+model Contract {
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  weekStart    DateTime @map("week_start")
+  targetCount  Int      @map("target_count")
+  actualCount  Int      @default(0) @map("actual_count")
+  witnessIds   String   @default("[]")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("contracts")
 }
