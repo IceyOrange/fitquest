@@ -1,3 +1,15 @@
+function toLocalDateStr(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function parseLocalDate(s: string): Date {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 export function calculateStreak(workoutDates: Date[]): number {
   if (workoutDates.length === 0) return 0;
 
@@ -8,12 +20,12 @@ export function calculateStreak(workoutDates: Date[]): number {
   for (const d of workoutDates) {
     const day = new Date(d);
     day.setHours(0, 0, 0, 0);
-    uniqueDays.add(day.toISOString().slice(0, 10));
+    uniqueDays.add(toLocalDateStr(day));
   }
 
   const sortedDays = Array.from(uniqueDays).sort().reverse();
 
-  const firstDay = new Date(sortedDays[0]);
+  const firstDay = parseLocalDate(sortedDays[0]);
   firstDay.setHours(0, 0, 0, 0);
   const diffFromToday = Math.floor(
     (today.getTime() - firstDay.getTime()) / 86400000
@@ -25,7 +37,7 @@ export function calculateStreak(workoutDates: Date[]): number {
   let prevDay = firstDay;
 
   for (let i = 1; i < sortedDays.length; i++) {
-    const currentDay = new Date(sortedDays[i]);
+    const currentDay = parseLocalDate(sortedDays[i]);
     currentDay.setHours(0, 0, 0, 0);
     const diff = Math.floor(
       (prevDay.getTime() - currentDay.getTime()) / 86400000
