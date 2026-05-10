@@ -41,31 +41,13 @@ function CloseIcon() {
 export default function AddFriend() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
-    setLoading(true);
-    setMessage("");
-    setError("");
-
-    const res = await fetch("/api/friends", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ friendEmail: email.trim() }),
-    });
-
-    if (res.ok) {
-      setMessage("加进来了。");
-      setEmail("");
-    } else {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error || "添加失败，检查一下邮箱。");
-    }
-    setLoading(false);
+    setMessage("演示模式：邀请功能仅供预览");
+    setEmail("");
   };
 
   if (!open) {
@@ -105,7 +87,6 @@ export default function AddFriend() {
           type="button"
           onClick={() => {
             setOpen(false);
-            setError("");
             setMessage("");
           }}
           className="tap-shrink"
@@ -132,31 +113,22 @@ export default function AddFriend() {
         />
         <button
           type="submit"
-          disabled={loading}
-          className="px-4 text-[14px] tap-shrink font-display disabled:opacity-45"
+          className="px-4 text-[14px] tap-shrink font-display"
           style={{
             backgroundColor: "var(--color-brand-500)",
             color: "var(--color-surface-raised)",
             borderRadius: "var(--radius-md)",
           }}
         >
-          {loading ? "…" : "邀请"}
+          邀请
         </button>
       </form>
       {message && (
         <div
           className="text-[12px] mt-2"
-          style={{ color: "var(--color-success)" }}
+          style={{ color: "var(--color-ink-tertiary)" }}
         >
           {message}
-        </div>
-      )}
-      {error && (
-        <div
-          className="text-[12px] mt-2"
-          style={{ color: "var(--color-danger)" }}
-        >
-          {error}
         </div>
       )}
     </div>

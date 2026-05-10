@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import FeedItem from "./FeedItem";
-import { DEMO_FEED, type DemoFeedItem } from "@/lib/demo-data";
+import { DEMO_FEED } from "@/lib/demo-data";
 
 interface FeedData {
   id: string;
@@ -19,34 +19,7 @@ interface FeedData {
 }
 
 export default function FeedList() {
-  const [items, setItems] = useState<FeedData[] | DemoFeedItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isDemo, setIsDemo] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/feed")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.items && data.items.length > 0) {
-          setItems(data.items);
-        } else {
-          setItems(DEMO_FEED);
-          setIsDemo(true);
-        }
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <div
-        className="text-center py-12 text-[13px]"
-        style={{ color: "var(--color-ink-muted)" }}
-      >
-        加载中…
-      </div>
-    );
-  }
+  const [items] = useState<FeedData[]>(DEMO_FEED);
 
   if (items.length === 0) {
     return (
@@ -73,30 +46,16 @@ export default function FeedList() {
 
   return (
     <div>
-      {isDemo && (
-        <div
-          className="px-5 py-3 text-[12px]"
-          style={{
-            color: "var(--color-ink-tertiary)",
-            backgroundColor: "var(--color-surface-sunken)",
-            borderBottom: "1px solid var(--color-line-soft)",
-          }}
-        >
-          以下是预览动态，
-          <a
-            href="/register"
-            className="font-display"
-            style={{
-              color: "var(--color-brand-500)",
-              textDecoration: "underline",
-              textUnderlineOffset: "3px",
-            }}
-          >
-            注册账号
-          </a>
-          后会替换成真实搭子的动态。
-        </div>
-      )}
+      <div
+        className="px-5 py-3 text-[12px]"
+        style={{
+          color: "var(--color-ink-tertiary)",
+          backgroundColor: "var(--color-surface-sunken)",
+          borderBottom: "1px solid var(--color-line-soft)",
+        }}
+      >
+        以下是预览动态
+      </div>
       <div
         className="divide-y"
         style={{ borderColor: "var(--color-line-soft)" }}

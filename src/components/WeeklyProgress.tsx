@@ -1,7 +1,3 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth.config";
-import { getUserStats } from "@/lib/stats";
-
 interface ProgressProps {
   thisWeekCount: number;
   weeklyTarget: number;
@@ -88,19 +84,6 @@ function ProgressBlock({ thisWeekCount, weeklyTarget }: ProgressProps) {
   );
 }
 
-export default async function WeeklyProgress() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    return <ProgressBlock thisWeekCount={2} weeklyTarget={3} />;
-  }
-
-  const userId = (session.user as Record<string, unknown>).id as string;
-  const stats = await getUserStats(userId);
-  return (
-    <ProgressBlock
-      thisWeekCount={stats.thisWeekCount}
-      weeklyTarget={stats.weeklyTarget}
-    />
-  );
+export default function WeeklyProgress() {
+  return <ProgressBlock thisWeekCount={2} weeklyTarget={3} />;
 }

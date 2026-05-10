@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { DEMO_WORKOUTS } from "@/lib/demo-data";
 
 const WORKOUT_LABELS: Record<string, { label: string; emoji: string }> = {
   running: { label: "跑步", emoji: "🏃" }, gym: { label: "健身", emoji: "🏋️" },
@@ -9,13 +9,6 @@ const WORKOUT_LABELS: Record<string, { label: string; emoji: string }> = {
   badminton: { label: "羽毛球", emoji: "🏸" }, football: { label: "足球", emoji: "⚽" },
   hiking: { label: "徒步", emoji: "🥾" }, other: { label: "其他", emoji: "💪" },
 };
-
-interface WorkoutRecord {
-  type: string;
-  duration: number;
-  distance: number | null;
-  recordedAt: string;
-}
 
 function getTimeAgo(dateStr: string): string {
   const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
@@ -26,29 +19,7 @@ function getTimeAgo(dateStr: string): string {
 }
 
 export default function RecentWorkout() {
-  const [workout, setWorkout] = useState<WorkoutRecord | null>(null);
-  const [isDemo, setIsDemo] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/workouts?limit=1")
-      .then((r) => r.json())
-      .then((data) => {
-        const workouts = data.workouts || [];
-        if (workouts.length > 0) {
-          setWorkout(workouts[0]);
-        } else {
-          setWorkout({
-            type: "running",
-            duration: 30,
-            distance: 5.2,
-            recordedAt: new Date(Date.now() - 7200000).toISOString(),
-          });
-          setIsDemo(true);
-        }
-      })
-      .catch(() => {});
-  }, []);
-
+  const workout = DEMO_WORKOUTS[0];
   if (!workout) return null;
 
   const info = WORKOUT_LABELS[workout.type] || WORKOUT_LABELS.other;
@@ -62,7 +33,6 @@ export default function RecentWorkout() {
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-gray-800">{info.label}</span>
-            {isDemo && <span className="text-[10px] text-primary-400">预览</span>}
           </div>
           <div className="text-xs text-gray-400 mt-0.5">
             {workout.duration} 分钟{workout.distance ? ` · ${workout.distance}km` : ""} · {getTimeAgo(workout.recordedAt)}

@@ -1,35 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { DEMO_FRIENDS, type DemoFriend } from "@/lib/demo-data";
+import { useState } from "react";
+import { DEMO_FRIENDS } from "@/lib/demo-data";
 import { getProfile } from "@/lib/personality";
 
 interface Friend { id: string; name: string; personalityType: string | null; exercisedToday: boolean; }
 
 export default function FriendSummary() {
-  const [friends, setFriends] = useState<Friend[] | DemoFriend[]>([]);
-  const [isDemo, setIsDemo] = useState(false);
+  const [friends] = useState<Friend[]>(DEMO_FRIENDS);
   const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/friends").then((r) => r.json()).then((data) => {
-      if (data.friends && data.friends.length > 0) {
-        setFriends(data.friends);
-      } else {
-        setFriends(DEMO_FRIENDS);
-        setIsDemo(true);
-      }
-    });
-  }, []);
 
   const todayFriends = friends.filter((f) => f.exercisedToday);
   const notTodayFriends = friends.filter((f) => !f.exercisedToday);
 
   return (
     <div className="card">
-      {isDemo && (
-        <div className="text-[10px] text-primary-400 mb-2">📌 预览数据</div>
-      )}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           {todayFriends.length > 0 && (
@@ -73,7 +58,7 @@ export default function FriendSummary() {
   );
 }
 
-function FriendRow({ friend, active }: { friend: Friend | DemoFriend; active: boolean }) {
+function FriendRow({ friend, active }: { friend: Friend; active: boolean }) {
   const p = friend.personalityType ? getProfile(friend.personalityType as Parameters<typeof getProfile>[0]) : null;
 
   return (

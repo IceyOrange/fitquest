@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { QUIZ_QUESTIONS } from "@/lib/quiz-questions";
-import { PERSONALITY_PROFILES } from "@/lib/personality";
+import { QUIZ_QUESTIONS, calculateQuizResult } from "@/lib/quiz-questions";
+import { PERSONALITY_PROFILES, calculatePersonality } from "@/lib/personality";
 import type { PersonalityType } from "@/types";
 
 function PageShell({ children }: { children: React.ReactNode }) {
@@ -19,30 +18,11 @@ function PageShell({ children }: { children: React.ReactNode }) {
 }
 
 export default function QuizPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [result, setResult] = useState<PersonalityType | null>(null);
   const [loading, setLoading] = useState(false);
-
-  if (status === "loading") {
-    return (
-      <PageShell>
-        <div
-          className="min-h-screen flex items-center justify-center text-[13px]"
-          style={{ color: "var(--color-ink-muted)" }}
-        >
-          加载中…
-        </div>
-      </PageShell>
-    );
-  }
-
-  if (!session) {
-    router.push("/login");
-    return null;
-  }
 
   const handleSelect = async (optionIndex: number) => {
     const newAnswers = [...answers, optionIndex];
@@ -52,13 +32,9 @@ export default function QuizPage() {
       setCurrent(current + 1);
     } else {
       setLoading(true);
-      const res = await fetch("/api/quiz/result", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers: newAnswers }),
-      });
-      const data = await res.json();
-      setResult(data.personalityType);
+      const quizResult = calculateQuizResult(newAnswers);
+      const personality = calculatePersonality(quizResult);
+      setResult(personality);
       setLoading(false);
     }
   };

@@ -3,7 +3,6 @@ import "@fontsource-variable/geist-mono";
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
-import { Providers } from "@/components/Providers";
 import ProductBrief from "@/components/ProductBrief";
 
 export const metadata: Metadata = {
@@ -37,10 +36,8 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Providers>
-          <ProductBrief />
-          {children}
-        </Providers>
+        <ProductBrief />
+        {children}
       </body>
     </html>
   );

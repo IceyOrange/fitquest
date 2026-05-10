@@ -99,20 +99,10 @@ export default function FeedItem({
     if (liked) return;
     setLiked(true);
     setLikes((l) => l + 1);
-    await fetch("/api/interactions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feedItemId: id, type: "like" }),
-    });
   };
 
   const handleWitness = async () => {
     if (witnessed) return;
-    await fetch("/api/interactions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feedItemId: id, type: "witness" }),
-    });
     setWitnesses((w) => w + 1);
     setWitnessed(true);
   };

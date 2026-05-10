@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import { generateHeatmapData } from "@/lib/demo-data";
 
 interface DayData {
   date: string;
@@ -15,43 +16,7 @@ function colorFor(count: number): string {
 }
 
 export default function StreakHeatmap() {
-  const [days, setDays] = useState<DayData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const total = window.innerWidth < 380 ? 140 : 182;
-
-    fetch("/api/workouts?limit=365")
-      .then((r) => r.json())
-      .then((data) => {
-        const workoutDays: Record<string, number> = {};
-        for (const w of data.workouts || []) {
-          const date = new Date(w.recordedAt).toISOString().slice(0, 10);
-          workoutDays[date] = (workoutDays[date] || 0) + 1;
-        }
-        const result: DayData[] = [];
-        const today = new Date();
-        for (let i = total - 1; i >= 0; i--) {
-          const d = new Date(today);
-          d.setDate(d.getDate() - i);
-          const iso = d.toISOString().slice(0, 10);
-          result.push({ date: iso, count: workoutDays[iso] || 0 });
-        }
-        setDays(result);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <div
-        className="text-[12px] py-2"
-        style={{ color: "var(--color-ink-muted)" }}
-      >
-        正在算这阵子的动静…
-      </div>
-    );
-  }
+  const days = useMemo(() => generateHeatmapData(), []);
 
   const totalDays = days.length;
   const activeDays = days.filter((d) => d.count > 0).length;

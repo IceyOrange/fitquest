@@ -1,7 +1,3 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth.config";
 import BottomNav from "@/components/BottomNav";
 import GreetingHeader from "@/components/GreetingHeader";
 import WeeklyProgress from "@/components/WeeklyProgress";
@@ -45,21 +41,7 @@ function HomeBody() {
   );
 }
 
-export default async function HomePage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return (
-      <HomeShell>
-        <HomeBody />
-      </HomeShell>
-    );
-  }
-
-  const userId = (session.user as Record<string, unknown>).id as string;
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user?.personalityType) redirect("/quiz");
-
+export default function HomePage() {
   return (
     <HomeShell>
       <HomeBody />

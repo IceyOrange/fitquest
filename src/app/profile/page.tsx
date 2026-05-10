@@ -1,10 +1,6 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/auth.config";
-import { prisma } from "@/lib/prisma";
 import { PERSONALITY_PROFILES } from "@/lib/personality";
+import { DEMO_USER, DEMO_WORKOUTS } from "@/lib/demo-data";
 import StreakHeatmap from "@/components/StreakHeatmap";
-import SignOutButton from "@/components/SignOutButton";
 import BottomNav from "@/components/BottomNav";
 
 const WORKOUT_LABELS: Record<string, string> = {
@@ -71,88 +67,13 @@ function PageShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default async function ProfilePage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return (
-      <PageShell>
-        <div className="px-5 pt-7 pb-5">
-          <div
-            className="text-[11px] uppercase"
-            style={{
-              color: "var(--color-ink-tertiary)",
-              letterSpacing: "0.14em",
-            }}
-          >
-            我的
-          </div>
-          <h1
-            className="font-display mt-1.5"
-            style={{
-              color: "var(--color-ink-primary)",
-              fontSize: "26px",
-              lineHeight: 1.15,
-              letterSpacing: "0.01em",
-            }}
-          >
-            还没有账号
-          </h1>
-        </div>
-
-        <div
-          style={{
-            borderTop: "1px solid var(--color-line-soft)",
-            borderBottom: "1px solid var(--color-line-soft)",
-          }}
-          className="px-5 py-7"
-        >
-          <p
-            className="text-[14px]"
-            style={{ color: "var(--color-ink-secondary)", lineHeight: 1.7 }}
-          >
-            注册一个账号，可以
-            <br />
-            把每次的动作攒成一年的热力图，
-            <br />
-            也能让搭子看到你今天有没有动。
-          </p>
-        </div>
-
-        <div className="px-5 pt-7 space-y-3">
-          <a href="/register" className="block">
-            <button type="button" className="btn-primary tap-shrink">
-              注册账号
-            </button>
-          </a>
-          <a
-            href="/login"
-            className="block text-center text-[13px] py-2"
-            style={{ color: "var(--color-ink-tertiary)" }}
-          >
-            已有账号？去登录
-          </a>
-        </div>
-      </PageShell>
-    );
-  }
-
-  const userId = (session.user as Record<string, unknown>).id as string;
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) redirect("/login");
-
+export default function ProfilePage() {
+  const user = DEMO_USER;
   const profile = user.personalityType
-    ? PERSONALITY_PROFILES[
-        user.personalityType as keyof typeof PERSONALITY_PROFILES
-      ]
+    ? PERSONALITY_PROFILES[user.personalityType]
     : null;
 
-  const workouts = await prisma.workout.findMany({
-    where: { userId },
-    orderBy: { recordedAt: "desc" },
-    take: 365,
-    select: { recordedAt: true, type: true, duration: true },
-  });
+  const workouts = DEMO_WORKOUTS;
 
   return (
     <PageShell>
@@ -299,11 +220,6 @@ export default async function ProfilePage() {
                 <ChevronRightIcon />
               </span>
             </a>
-            <div
-              style={{ borderTop: "1px solid var(--color-line-soft)" }}
-            >
-              <SignOutButton />
-            </div>
           </Section>
         </div>
       </div>

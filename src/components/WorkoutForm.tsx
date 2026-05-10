@@ -38,6 +38,7 @@ export default function WorkoutForm() {
   const [distance, setDistance] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,27 +49,13 @@ export default function WorkoutForm() {
     setError("");
     setLoading(true);
 
-    const res = await fetch("/api/workouts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        type,
-        duration: parseInt(duration),
-        distance: distance ? parseFloat(distance) : null,
-      }),
-    });
-
-    if (res.status === 401) {
-      router.push("/register");
-      return;
-    }
-    if (res.ok) {
-      router.push("/");
-      router.refresh();
-    } else {
-      setError("没记上，再试一次。");
-    }
-    setLoading(false);
+    setTimeout(() => {
+      setMessage("已记录（演示模式，数据不会保存）");
+      setLoading(false);
+      setTimeout(() => {
+        router.push("/");
+      }, 1200);
+    }, 600);
   };
 
   return (
@@ -79,6 +66,14 @@ export default function WorkoutForm() {
           style={{ color: "var(--color-danger)" }}
         >
           {error}
+        </div>
+      )}
+      {message && (
+        <div
+          className="text-[13px]"
+          style={{ color: "var(--color-success)" }}
+        >
+          {message}
         </div>
       )}
 

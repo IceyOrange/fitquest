@@ -1,11 +1,9 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth.config";
-import { prisma } from "@/lib/prisma";
 import { PERSONALITY_PROFILES } from "@/lib/personality";
+import { DEMO_USER } from "@/lib/demo-data";
 import type { PersonalityType } from "@/types";
 
-const DEMO_NAME = "小宇";
-const DEMO_PERSONALITY: PersonalityType = "dawn_walker";
+const DEMO_NAME = DEMO_USER.name;
+const DEMO_PERSONALITY: PersonalityType = DEMO_USER.personalityType;
 
 function greetingFor(date: Date): string {
   const h = date.getHours();
@@ -72,34 +70,15 @@ function GreetingRow({ greeting, name, subtitle }: RowProps) {
   );
 }
 
-export default async function GreetingHeader() {
-  const session = await getServerSession(authOptions);
+export default function GreetingHeader() {
   const greeting = greetingFor(new Date());
-
-  if (!session?.user) {
-    const profile = PERSONALITY_PROFILES[DEMO_PERSONALITY];
-    return (
-      <GreetingRow
-        greeting={greeting}
-        name={DEMO_NAME}
-        subtitle={`${profile.name} · ${profile.slogan}`}
-      />
-    );
-  }
-
-  const userId = (session.user as Record<string, unknown>).id as string;
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) return null;
-
-  const profile = user.personalityType
-    ? PERSONALITY_PROFILES[user.personalityType as keyof typeof PERSONALITY_PROFILES]
-    : null;
+  const profile = PERSONALITY_PROFILES[DEMO_PERSONALITY];
 
   return (
     <GreetingRow
       greeting={greeting}
-      name={user.name ?? "你"}
-      subtitle={profile ? `${profile.name} · ${profile.slogan}` : null}
+      name={DEMO_NAME}
+      subtitle={`${profile.name} · ${profile.slogan}`}
     />
   );
 }
