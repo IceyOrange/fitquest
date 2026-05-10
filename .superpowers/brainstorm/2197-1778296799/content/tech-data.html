@@ -1,0 +1,156 @@
+<h2>技术方案与数据流</h2>
+<p class="subtitle">MVP 阶段保持简洁，渐进式迭代</p>
+
+<div class="section">
+  <h3>推荐技术栈</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+    <div style="background: white; border-radius: 12px; padding: 16px; border-top: 3px solid #0984E3;">
+      <div style="font-weight: bold; font-size: 14px; color: #0984E3;">前端</div>
+      <div style="font-size: 12px; color: #2d3436; margin-top: 8px; line-height: 1.8;">
+        <div><b>框架</b>：React + TypeScript</div>
+        <div><b>样式</b>：Tailwind CSS</div>
+        <div><b>动画</b>：Framer Motion</div>
+        <div><b>图表</b>：Recharts</div>
+      </div>
+      <div style="font-size: 11px; color: #999; margin-top: 8px;">理由：组件化开发 + 动画效果丰富 + 快速迭代</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-top: 3px solid #00B894;">
+      <div style="font-weight: bold; font-size: 14px; color: #00B894;">后端</div>
+      <div style="font-size: 12px; color: #2d3436; margin-top: 8px; line-height: 1.8;">
+        <div><b>运行时</b>：Node.js</div>
+        <div><b>框架</b>：Express / Fastify</div>
+        <div><b>数据库</b>：PostgreSQL</div>
+        <div><b>ORM</b>：Prisma</div>
+      </div>
+      <div style="font-size: 11px; color: #999; margin-top: 8px;">理由：全栈 JS + 类型安全 + 关系型数据适合社交</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-top: 3px solid #E17055;">
+      <div style="font-weight: bold; font-size: 14px; color: #E17055;">部署</div>
+      <div style="font-size: 12px; color: #2d3436; margin-top: 8px; line-height: 1.8;">
+        <div><b>前端</b>：Vercel</div>
+        <div><b>后端</b>：Railway / Render</div>
+        <div><b>数据库</b>：Supabase</div>
+      </div>
+      <div style="font-size: 11px; color: #999; margin-top: 8px;">理由：免费额度足够 MVP，一键部署</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-top: 3px solid #6C5CE7;">
+      <div style="font-weight: bold; font-size: 14px; color: #6C5CE7;">数据接入</div>
+      <div style="font-size: 12px; color: #2d3436; margin-top: 8px; line-height: 1.8;">
+        <div><b>V1</b>：手动记录运动</div>
+        <div><b>V2</b>：Keep API 同步</div>
+        <div><b>V3</b>：Apple Health / 微信运动</div>
+      </div>
+      <div style="font-size: 11px; color: #999; margin-top: 8px;">理由：渐进式接入，降低冷启动门槛</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>核心数据模型</h3>
+  <div class="mockup">
+    <div class="mockup-header">数据实体关系</div>
+    <div class="mockup-body" style="background: #f8f9fa; padding: 20px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; font-size: 12px;">
+        <div style="background: #6C5CE7; color: white; padding: 10px 16px; border-radius: 10px; text-align: center; min-width: 100px;">
+          <div style="font-weight: bold;">User</div>
+          <div style="font-size: 10px; opacity: 0.8; margin-top: 2px;">姓名、头像</div>
+          <div style="font-size: 10px; opacity: 0.8;">性格类型</div>
+          <div style="font-size: 10px; opacity: 0.8;">能量值</div>
+        </div>
+        <div style="font-size: 18px; color: #999;">←→</div>
+        <div style="background: #00B894; color: white; padding: 10px 16px; border-radius: 10px; text-align: center; min-width: 100px;">
+          <div style="font-weight: bold;">Workout</div>
+          <div style="font-size: 10px; opacity: 0.8; margin-top: 2px;">类型、时长</div>
+          <div style="font-size: 10px; opacity: 0.8;">距离、时间戳</div>
+          <div style="font-size: 10px; opacity: 0.8;">数据来源</div>
+        </div>
+        <div style="font-size: 18px; color: #999;">→</div>
+        <div style="background: #E17055; color: white; padding: 10px 16px; border-radius: 10px; text-align: center; min-width: 100px;">
+          <div style="font-weight: bold;">Badge</div>
+          <div style="font-size: 10px; opacity: 0.8; margin-top: 2px;">类型、等级</div>
+          <div style="font-size: 10px; opacity: 0.8;">解锁时间</div>
+          <div style="font-size: 10px; opacity: 0.8;">进度百分比</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; margin-top: 14px; font-size: 12px;">
+        <div style="background: #0984E3; color: white; padding: 10px 16px; border-radius: 10px; text-align: center; min-width: 100px;">
+          <div style="font-weight: bold;">Contract</div>
+          <div style="font-size: 10px; opacity: 0.8; margin-top: 2px;">周目标次数</div>
+          <div style="font-size: 10px; opacity: 0.8;">已完成次数</div>
+          <div style="font-size: 10px; opacity: 0.8;">见证人列表</div>
+        </div>
+        <div style="font-size: 18px; color: #999;">←→</div>
+        <div style="background: #6C5CE7; color: white; padding: 10px 16px; border-radius: 10px; text-align: center; min-width: 100px;">
+          <div style="font-weight: bold;">User</div>
+        </div>
+        <div style="font-size: 18px; color: #999;">←→</div>
+        <div style="background: #fdcb6e; color: #2d3436; padding: 10px 16px; border-radius: 10px; text-align: center; min-width: 100px;">
+          <div style="font-weight: bold;">Friendship</div>
+          <div style="font-size: 10px; opacity: 0.8; margin-top: 2px;">好友关系</div>
+          <div style="font-size: 10px; opacity: 0.8;">见证记录</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>核心数据流</h3>
+  <div style="background: white; border-radius: 12px; padding: 20px; font-size: 12px;">
+    <div style="display: flex; flex-direction: column; gap: 4px; color: #2d3436;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="background: #6C5CE7; color: white; padding: 3px 10px; border-radius: 6px; font-size: 11px; white-space: nowrap;">1. 记录运动</span>
+        <span style="color: #999;">用户手动输入 → 写入 Workout 表</span>
+      </div>
+      <div style="text-align: center; color: #ccc;">↓</div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="background: #00B894; color: white; padding: 3px 10px; border-radius: 6px; font-size: 11px; white-space: nowrap;">2. 触发计算</span>
+        <span style="color: #999;">检查徽章解锁条件 + 更新连续天数 + 重算性格能量</span>
+      </div>
+      <div style="text-align: center; color: #ccc;">↓</div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="background: #E17055; color: white; padding: 3px 10px; border-radius: 6px; font-size: 11px; white-space: nowrap;">3. 生成事件</span>
+        <span style="color: #999;">新徽章 / 性格变化 / 连续天数 → 推送到运动圈 Feed</span>
+      </div>
+      <div style="text-align: center; color: #ccc;">↓</div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="background: #0984E3; color: white; padding: 3px 10px; border-radius: 6px; font-size: 11px; white-space: nowrap;">4. 社交传播</span>
+        <span style="color: #999;">好友看到动态 → 点赞/见证 → 触发对方的多巴胺反馈</span>
+      </div>
+      <div style="text-align: center; color: #ccc;">↓</div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="background: #fdcb6e; color: #2d3436; padding: 3px 10px; border-radius: 6px; font-size: 11px; white-space: nowrap;">5. 周期汇总</span>
+        <span style="color: #999;">每周日晚 → 生成报告卡 → 用户分享 → 带来新用户</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>MVP 范围建议</h3>
+  <div style="display: flex; gap: 12px;">
+    <div style="flex: 1; background: #e8f8f5; border-radius: 12px; padding: 14px;">
+      <div style="font-weight: bold; color: #00B894; font-size: 13px; margin-bottom: 8px;">✅ V1 MVP（先做）</div>
+      <div style="font-size: 11px; color: #2d3436; line-height: 1.8;">
+        · 用户注册/登录<br/>
+        · 运动性格测试 + 8 种性格<br/>
+        · 手动记录运动<br/>
+        · 性格能量系统<br/>
+        · 连续打卡热力图<br/>
+        · 基础徽章（4 系列 × 3 级）<br/>
+        · 好友系统 + 运动圈 Feed
+      </div>
+    </div>
+    <div style="flex: 1; background: #f8f0ff; border-radius: 12px; padding: 14px;">
+      <div style="font-weight: bold; color: #6C5CE7; font-size: 13px; margin-bottom: 8px;">🔮 V2 迭代（后做）</div>
+      <div style="font-size: 11px; color: #2d3436; line-height: 1.8;">
+        · Keep API 数据同步<br/>
+        · 社交契约系统<br/>
+        · 周报/月报生成与分享<br/>
+        · 性格进化动画<br/>
+        · 传说隐藏徽章<br/>
+        · 运动性格匹配推荐
+      </div>
+    </div>
+  </div>
+</div>
