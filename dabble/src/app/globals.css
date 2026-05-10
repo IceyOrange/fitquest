@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+/* === Design DNA === see /.impeccable.md
+ * 60% 暖象牙底  /  30% 墨色字 + 细线  /  10% 墨绿 + 珊瑚红
+ * 细线优先于卡片；数字用 Mono、文字用 Smiley；墨绿做主、珊瑚红做尖。
+ */
+
+@theme {
+  /* ---- Surfaces — 暖象牙阶梯 ---- */
+  --color-surface-base: oklch(98.5% 0.010 85);
+  --color-surface-raised: oklch(99.5% 0.006 85);
+  --color-surface-sunken: oklch(96.0% 0.014 85);
+  --color-surface-tint: oklch(94.0% 0.018 85);
+
+  /* ---- Ink — 墨色字 ---- */
+  --color-ink-primary: oklch(22% 0.018 80);
+  --color-ink-secondary: oklch(40% 0.018 80);
+  --color-ink-tertiary: oklch(58% 0.014 80);
+  --color-ink-muted: oklch(75% 0.012 80);
+
+  /* ---- Lines — 1px 细线分隔 ---- */
+  --color-line-soft: oklch(94% 0.014 85);
+  --color-line-firm: oklch(86% 0.014 85);
+
+  /* ---- Brand — 墨绿（沉稳主色） ---- */
+  --color-brand-50: oklch(96% 0.020 165);
+  --color-brand-100: oklch(90% 0.040 165);
+  --color-brand-300: oklch(72% 0.075 165);
+  --color-brand-500: oklch(38% 0.060 165);
+  --color-brand-700: oklch(28% 0.045 165);
+  --color-brand-ink: oklch(20% 0.030 165);
+
+  /* ---- Coral — 珊瑚红（仅 live / 见证 / 情绪节点） ---- */
+  --color-coral-100: oklch(95% 0.030 28);
+  --color-coral-300: oklch(82% 0.110 28);
+  --color-coral-500: oklch(68% 0.165 28);
+  --color-coral-700: oklch(52% 0.150 28);
+
+  /* ---- States ---- */
+  --color-success: oklch(60% 0.110 150);
+  --color-danger: oklch(58% 0.180 25);
+
+  /* ---- Legacy compat aliases — phased out as components are rewritten ---- */
+  --color-bg: oklch(98.5% 0.010 85);
+  --color-card: oklch(99.5% 0.006 85);
+  --color-text: oklch(22% 0.018 80);
+  --color-text-soft: oklch(58% 0.014 80);
+  --color-border: oklch(94% 0.014 85);
+  --color-primary: oklch(38% 0.060 165);
+  --color-primary-50: oklch(96% 0.020 165);
+  --color-primary-100: oklch(90% 0.040 165);
+  --color-primary-300: oklch(72% 0.075 165);
+  --color-primary-500: oklch(38% 0.060 165);
+  --color-primary-600: oklch(32% 0.050 165);
+  --color-primary-700: oklch(28% 0.045 165);
+  --color-accent: oklch(68% 0.165 28);
+
+  /* ---- Fonts ---- */
+  --font-sans:
+    "Geist Variable", -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono:
+    "Geist Mono Variable", ui-monospace, "SFMono-Regular",
+    "Cascadia Code", "Menlo", monospace;
+  --font-display:
+    "Smiley Sans Oblique", "Smiley Sans", "Geist Variable",
+    -apple-system, "PingFang SC", sans-serif;
+
+  /* ---- Radii ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+}
+
+/* ---- Base ---- */
+html {
+  background-color: var(--color-surface-base);
+}
+
+body {
+  background-color: var(--color-surface-base);
+  color: var(--color-ink-primary);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01" on, "cv11" on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-brand-100);
+  color: var(--color-brand-ink);
+}
+
+/* ---- Primitives ---- */
+.card {
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-xl);
+  padding: 1rem;
+}
+
+.btn-primary {
+  background-color: var(--color-brand-500);
+  color: var(--color-surface-raised);
+  font-family: var(--font-display);
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+  padding: 0.875rem 1.5rem;
+  width: 100%;
+  transition: transform 120ms ease-out, background-color 200ms ease-out;
+}
+.btn-primary:hover {
+  background-color: var(--color-brand-700);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---- Utilities tied to design DNA ---- */
+
+/* Numbers / time / duration get Mono — composable on any element */
+.font-mono-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Display Chinese — Smiley Sans for headings & hero numerals */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.005em;
+}
+
+/* 1px hairline divider — used between rows in lieu of stacked cards */
+.divider-soft {
+  border-color: var(--color-line-soft);
+}
+.divider-firm {
+  border-color: var(--color-line-firm);
+}
+
+/* "正在动" coral live dot — only valid use of pulsing motion in app */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.92); }
+}
+.live-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--color-coral-500);
+  animation: live-pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  vertical-align: middle;
+}
+
+/* Page entrance — used on top-level <main> wrappers */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fade-up 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Tap state — only motion on buttons */
+.tap-shrink {
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tap-shrink:active {
+  transform: scale(0.98);
+}
+
+/* ---- Personality gradient kill-switch ----
+ * Old purple/orange gradient swatches were the wrong vibe.
+ * Until profile/quiz are rewritten, these collapse to surface-tint —
+ * visually neutral, doesn't crash any layout. */
+.gradient-dawn,
+.gradient-night,
+.gradient-fat-burner,
+.gradient-zen,
+.gradient-free,
+.gradient-precision,
+.gradient-allround,
+.gradient-marathon {
+  background: var(--color-surface-tint);
+  color: var(--color-ink-primary);
+}
